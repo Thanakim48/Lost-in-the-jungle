@@ -1,0 +1,105 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class PlatformGame {
+    - Timer timer
+    - int playerX, playerY, playerSpeed
+    - boolean jump, falling, levelComplete, playerDead
+    - int jumpStrength, jumpVelocity
+    - BufferedImage background, caveImage
+    - ArrayList<BufferedImage> walkingFramesLeft, walkingFramesRight
+    - ArrayList<Obstacle> obstacles
+    - ArrayList<Trap> traps
+    - ArrayList<Coin> coins
+    - ArrayList<HealPotion> healPotions
+    - ArrayList<Enemy> enemies
+    - Rectangle exitZone
+    - int score, lives, currentLevel, maxLives
+    - Instant gameStartTime
+    + PlatformGame()
+    + loadLevel(level: int)
+    + paintComponent(g: Graphics)
+    + actionPerformed(e: ActionEvent)
+    + handleGameOver()
+    + restartGame()
+    + returnToMenu()
+    + getBounds(): Rectangle
+    + main(args: String[])
+}
+
+class Obstacle {
+    - int x, y, width, height
+    - BufferedImage image
+    + Obstacle(x: int, y: int, width: int, height: int, image: BufferedImage)
+    + draw(g: Graphics)
+    + getBounds(): Rectangle
+}
+
+class Trap {
+    - int x, y, width, height
+    - BufferedImage image
+    + Trap(x: int, y: int, width: int, height: int, image: BufferedImage)
+    + draw(g: Graphics)
+    + getBounds(): Rectangle
+}
+
+class ScoreReducingTrap {
+    - int scorePenalty
+    + ScoreReducingTrap(x: int, y: int, width: int, height: int, image: BufferedImage, scorePenalty: int)
+    + getScorePenalty(): int
+}
+
+class HealthReducingTrap {
+    - int healthPenalty
+    + HealthReducingTrap(x: int, y: int, width: int, height: int, image: BufferedImage, healthPenalty: int)
+    + getHealthPenalty(): int
+}
+
+class Coin {
+    - int x, y, width, height
+    - BufferedImage image
+    + Coin(x: int, y: int, width: int, height: int, image: BufferedImage)
+    + draw(g: Graphics)
+    + getBounds(): Rectangle
+}
+
+class HealPotion {
+    - int x, y, width, height, healAmount
+    - BufferedImage image
+    + HealPotion(x: int, y: int, width: int, height: int, image: BufferedImage, healAmount: int)
+    + draw(g: Graphics)
+    + getBounds(): Rectangle
+    + getHealAmount(): int
+}
+
+class Enemy {
+    - int x, y, width, height, fireRate, fireCounter
+    - BufferedImage image
+    - ArrayList<Laser> lasers
+    + Enemy(x: int, y: int, width: int, height: int, image: BufferedImage, fireRate: int)
+    + draw(g: Graphics)
+    + update()
+    + shoot()
+    + getBounds(): Rectangle
+    + getLasers(): ArrayList<Laser>
+}
+
+class Laser {
+    - int x, y, width, height, speed
+    + Laser(x: int, y: int, width: int, height: int)
+    + update(): boolean
+    + draw(g: Graphics)
+    + getBounds(): Rectangle
+}
+
+PlatformGame "1" *-- "many" Obstacle
+PlatformGame "1" *-- "many" Trap
+PlatformGame "1" *-- "many" Coin
+PlatformGame "1" *-- "many" HealPotion
+PlatformGame "1" *-- "many" Enemy
+
+Trap <|-- ScoreReducingTrap
+Trap <|-- HealthReducingTrap
+Enemy "1" *-- "many" Laser
+
+@enduml
